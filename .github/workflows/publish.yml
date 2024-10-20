@@ -16,6 +16,6 @@ jobs:
           files: |
             examples/paper.tex
             examples/slides.tex
-            stochastic.tex
+            examples/stochastic.tex
           handouts: |
             examples/slides.tex
