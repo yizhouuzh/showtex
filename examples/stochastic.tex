@@ -1,0 +1,95 @@
+\documentclass{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage{hanging}
+\usepackage{hyperref}
+% Margins
+
+\usepackage[table]{xcolor}
+\usepackage[top=1cm, left=3cm, right=3cm, bottom=2cm]{geometry}
+
+\usepackage{listings}
+\linespread{1.3}
+\vspace{2em}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Stochastic Processes Review}
+\author{Yizhou Zhang}
+\date{October 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Definitions}
+We say that $X_n$ is a discrete time \textbf{Markov chain} with \textbf{transition matrix} $p(i,j)$ for any $j,i,i_{n-1},...,i_0$:
+\[
+P(X_{n+1}=j|X_n=i,X_{n-1}=i_{n-1},...,X_0=i_0)
+\]
+Let $T_y = \min\{n\geq1:X_n=y\}$ be the time (\textbf{stopping time}) of the first return to $y$, and let\\ $\rho_{yy} = P_y(T_y<\infty)$ be the probability $X_n$ returns to $y$ when it starts at $y$.\\
+(i) $\rho_{yy} < 1$: The probability of returning k times is $\rho^k_{yy}  \rightarrow 0 $ as $ k \rightarrow 1$. Thus, eventually the Markov chain does not find its way back to $y$. In this case the state $y$ is called \textbf{transient}, since after some point it is never visited by the
+Markov chain.\\
+(ii) $\rho_{yy} = 1$: The probability of returning k times $\rho^k_{yy} = 1$, so the chain returns to $y$ infinitely many times. In this case, the state $y$ is called \textbf{recurrent}, it continually recurs in the Markov chain.\par
+\textbf{Strong Markov Property}: Suppose $T$ is a stopping time. Given that $T = n$ and $X_T = y$, any other information about $X_0, . . .X_T$ is irrelevant for predicting the future, and $X_{T+k}, k \geq 0$ behaves like the Markov chain with initial state $y$.\par
+If $qp=q$ then $q$ is called a \textbf{stationary distribution}, where $p$ is the transition matrix.\par
+The \textbf{period} of a state is the largest number that will divide all the $n\geq 1$for which $p^n(x,x)>0$.That is, it is the greatest common divisor of $I_x=\{n\geq1: p^n(x,x)>0\}$\par
+\textbf{Convergence Theorem}: Suppose $p$ is irreducible, all states have period 1, and there is a stationary distribution $\pi$, then as $n\rightarrow\infty$, $p^n(x,y)\rightarrow\pi(y)$\par
+\textbf{PROOF}\\
+(\textbf{Lemma}: If there is a stationary distribution, then all states $y$ that have $\pi(y)>0$ are recurrent.)
+Proof: Let $N(y)$ be the number of times starting from $x$ to visit $y$. Then 
+\[
+\Sigma \pi(x)E_xN(y) = \Sigma\pi(x)\Sigma p^n(x,y) = \Sigma\Sigma \pi(x)p^n(x,y)=\Sigma\pi(y) = \infty
+\]
+Since $\infty = \Sigma\pi(x)\frac{\rho_{xy}}{1-\rho_{yy}}\leq\frac{1}{1-\rho_{yy}}$, we have $\rho_{yy}=1$.
+\par
+\section{Topics}
+\subsection{Random Walk}
+\textbf{Definition}: $X_1,X_2,...$ is a sequence of iid Rademacher random variables.
+Where $P[X_i=1]=P[X_i=-1]=1/2 \textbf{ (symmetric simple random walk)}$ Let $S_n = S_0+X_1+X_2+...+X_n$\par
+\textbf{Hitting time}:
+Given integers $A>0, B>0$ let \[
+\tau=\tau_{(A,-B)}=\min\{n\geq0: S_n=A \textit{ or }S_n=-B\}
+\]
+Interested in $E[\tau|S_0=0]$\\
+Define $g(k)=\frac{1}{2}E(\tau|S_0=k, X_1=1)+\frac{1}{2}E(\tau|S_0=k,X_1=-1)=1+g(k+1)/2+g(k-1)/2$\\Then 
+$\Delta\Delta g(k-1) = \Delta g(k)-\Delta g(k-1) = g(k+1)-g(k)-g(k)+g(k-1)=-2$\\
+We get the second derivative of g is -2, so $g(k)=-k^2+Dk+C$. Given $g(A)=g(-B)=0$, we have \textbf{$g(k)=-(k-A)(k+B)$}\\
+What if $A=\infty$? Let $\tau_1 = \min\{n\geq0:S_n=-100\}$ and $\tau_2(l) = \min\{n\geq0:S_n=-100$ or $S_n=l$ for any $l \geq 1\}$ Then we have: \[
+100l = E(\tau_2|S_0=0)\geq E(\tau_1|S_0=0)
+\]
+Let $l\rightarrow\infty$, we have $E(\tau_1|S_0=0)\rightarrow\infty$\par
+\textbf{Path counting}: $N_n(a,b)$ is the number of paths from a to b with n steps. $N_n^0(a,b)$ is the number of paths that visit 0 from a to b with n steps.\\
+\textbf{Related: The Ballot problem}: Two candidates A and B, with votes a and b. ($a>b$) Now we count the votes in a uniformly random order. We want to analyze the probability of A leading throughout, which is $P[\text{A leads throughout}] = \frac{N_{a+b}^{\neq0}(a,b)}{N_{a+b}(a,b)}$\\
+\newcommand*{\Comb}[2]{{}^{#1}C_{#2}}%
+To calculate that, we have formula for $N_{n}(a,b) = \Comb{n}{\frac{n+b-a}{2}}$. For $N_{a+b}^{\neq0}(a,b)$, use reflection principle below, we can get: \[
+N_{a+b}^{\neq0}(a,b) = N_{a+b}^{\neq0}(0,a-b)=N_{a+b}^{\neq0}(1,a-b)=N_{a+b}(1,a-b)-N_{a+b}^{0}(1,a-b) = N_{a+b}(1,a-b)-N_{a+b}(-1,a-b)
+\]
+\par
+\textbf{Reflection Principle}: (i) $N_n^0(a,b) = N_n(-a,b)$ Reflect when the path from a to b first hit 0 and we get the path from -a to b. \\
+\underline{Related Questions}: 1. Prove $P[S_1\neq0,...,S_{2n}\neq0|S_0=0] = P[S_{2n}=0|S_0=0]$\\
+Proof: Reflect the path when the path firstly hit $\frac{S_{2n}}{2}$.\\
+2. Prove $P[S_1\geq0,...,S_{2n}\geq0|S_0=0] = P[S_{2n}=0|S_0=0]$\par
+\textbf{Sterling's formula}: $P[S_{2k}=0]\sim \frac{1}{\sqrt{\pi k}}$ for large k.\par
+\textbf{Arcsine Law}: For large k, n, we have $P[\hat{\tau}_{2n}=2k]\sim \frac{1}{n}f(\frac{k}{n})$ where $f(x) = \frac{1}{\pi\sqrt{x(1-x)}}$, $0<x<1$.\\
+where $\hat{\tau}_{2n}=\max\{0\leq i\leq 2n: S_i = 0\}$\\
+Proof: $P[\hat{\tau}_{2n}=2k] = P[S_{2k}=0]P[S_{2n-2k}=0]=\frac{1}{\pi\sqrt{x(1-x)}}$ using Sterling's formula.
+
+\subsection{Branching Processes}
+A scenario: Consider a single bacteria in an ideal environment, the bacteria gives birth to $\xi$ bacteria. Generally, let the generation k bacteria be {$b_1, b_2,...,b_n$}, which give birth to $\xi_1,\xi_2,...,\xi_n$. What is the probability that the bacteria population goes extinct?\par
+Let $Z_n$ be the number of bacteria in generation n. $Z_n = \Sigma_{i=1}^{Z_{n-1}}\xi_{(n-1,i)}$ If $Z_i=0\text{ then for } j>i, Z_j=0$. Formally, we say 0 as \textbf{absorbing state} for the process $(Z_n)_{n\geq0}$.\par
+Suppose that $\mu = E[\xi]$ The expectation of $Z_n$ is: 
+$E[Z_0]=1$, $E[Z_1] = \mu$, $E[Z_n]=\mu E[Z_{n-1}]=\mu^n$.\\
+This shows that if $\mu < 1$, then with probability 1, the population becomes extinct.\\
+If $\mu \geq 1$, let $\rho$ denote the probability that the population eventually dies out so that $\rho = P[Z_n=0 \text{ for some }n\geq1]$. Suppose the bacterium b in generation 0 has k children $b_1,...,b_k$. Then (1). the population dies out if and only if the subpopulations starting at $b_1,...b_k$dies out. (2). the probability o each of these subpopulations dying out is also $\rho$.\par
+Then $\rho = \Sigma_{k=0}^{\infty}P[\xi_{0,1}=k]\rho^k=\Sigma_{k=0}^{\infty}p_k\rho^k = \phi(\rho)$ where $\phi(z) = \Sigma_{k=0}^{\infty}p_kZ^k$ is the \textbf{generating function} of $(p_k)_{k\geq0}$.\\
+So the solution to $\rho = \phi(\rho)$ is the probability of extinction.\par
+Properties of generating function $\phi(z)$: 1. Strictly convex on (0,1]. 2. If $\phi\prime(1)\leq1$, there is only one solution: $\rho = 1$. If $\phi\prime(1)>1$, there is one $\rho \in (0,1)$ such that $\rho = \phi(\rho)$.
+\section{Acknowledgements}
+This review largely refers \href{https://jainvishesh.github.io/STATS217_Winter2021.html}{STATS 217 slides} and \href{https://services.math.duke.edu/~rtd/EOSP/EOSP2E.pdf}{Essentials of Stochastic Processes by Durrett}.
+\end{document}
